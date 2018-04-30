@@ -1,0 +1,7 @@
+{
+    "topics": [
+        "log_login",
+        "log_player"
+    ],
+    "batchSize": 100
+}
