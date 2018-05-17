@@ -41,7 +41,7 @@ public class DataCenterHDFSSink extends HDFSBaseSink{
         hdfsHeadInfos = null;
         String[] tmpHeadInfos = line.split("\\|");
         if (tmpHeadInfos != null && tmpHeadInfos.length >= 6 &&
-                isDouble(tmpHeadInfos[0]) &&
+                StringUtils.isNotEmpty(tmpHeadInfos[0]) &&
                 isNumber(tmpHeadInfos[1]) &&
                 StringUtils.isNotEmpty(tmpHeadInfos[2]) &&
                 isNumber(tmpHeadInfos[3])) {

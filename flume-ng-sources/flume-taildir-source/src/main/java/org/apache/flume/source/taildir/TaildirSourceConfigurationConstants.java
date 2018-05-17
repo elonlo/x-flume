@@ -67,4 +67,8 @@ public class TaildirSourceConfigurationConstants {
   /** Whether to include absolute path filename in a header. */
   public static final String FILENAME_HEADER = "fileHeader";
   public static final boolean DEFAULT_FILE_HEADER = false;
+
+  /** Max tail file size. */
+  public static final String MAX_TAIL_FILE_SIZE = "maxTailFileSize";
+  public static final int DEFAULT_MAX_TAIL_FILE_SIZE = 100000;
 }

@@ -50,9 +50,9 @@ public class ReliableTaildirEventReader implements ReliableEventReader {
 
   private final Table<String, String, String> headerTable;
 
-  private TaildirCache taildirCache = null;
+  private TaildirCache taildirCache;
   private TailFile currentFile = null;
-  private Map<String, TailFile> tailFiles = Maps.newHashMap();
+  private Map<String, TailFile> tailFiles;
   private long updateTime;
   private boolean addByteOffset;
   private boolean committed = true;
@@ -65,7 +65,7 @@ public class ReliableTaildirEventReader implements ReliableEventReader {
   private ReliableTaildirEventReader(Map<String, String> filePaths,
       Table<String, String, String> headerTable, String positionFilePath,
       boolean skipToEnd, boolean addByteOffset, boolean cachePatternMatching,
-      boolean annotateFileName, String fileNameHeader) throws IOException {
+      boolean annotateFileName, String fileNameHeader, int maxTailFileSize) throws IOException {
     // Sanity checks
     Preconditions.checkNotNull(filePaths);
     Preconditions.checkNotNull(positionFilePath);
@@ -78,6 +78,7 @@ public class ReliableTaildirEventReader implements ReliableEventReader {
     logger.info("headerTable: " + headerTable.toString());
 
     this.taildirCache = new TaildirCache(filePaths, cachePatternMatching);
+    this.tailFiles = LRUCache.newInstance(maxTailFileSize);
     this.headerTable = headerTable;
     this.addByteOffset = addByteOffset;
     this.annotateFileName = annotateFileName;
@@ -305,6 +306,7 @@ public class ReliableTaildirEventReader implements ReliableEventReader {
             TaildirSourceConfigurationConstants.DEFAULT_FILE_HEADER;
     private String fileNameHeader =
             TaildirSourceConfigurationConstants.DEFAULT_FILENAME_HEADER_KEY;
+    private int maxTailFileSize;
 
     public Builder filePaths(Map<String, String> filePaths) {
       this.filePaths = filePaths;
@@ -346,10 +348,15 @@ public class ReliableTaildirEventReader implements ReliableEventReader {
       return this;
     }
 
+    public Builder maxTailFileSize(int maxTailFileSize) {
+      this.maxTailFileSize = maxTailFileSize;
+      return this;
+    }
+
     public ReliableTaildirEventReader build() throws IOException {
       return new ReliableTaildirEventReader(filePaths, headerTable, positionFilePath, skipToEnd,
                                             addByteOffset, cachePatternMatching,
-                                            annotateFileName, fileNameHeader);
+                                            annotateFileName, fileNameHeader, maxTailFileSize);
     }
   }
 

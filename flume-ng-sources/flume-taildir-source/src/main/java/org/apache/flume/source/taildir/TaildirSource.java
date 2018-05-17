@@ -67,6 +67,7 @@ public class TaildirSource extends AbstractSource implements
   private String positionFilePath;
   private boolean skipToEnd;
   private boolean byteOffsetHeader;
+  private int maxTailFileSize;
 
   private SourceCounter sourceCounter;
   private ReliableTaildirEventReader reader;
@@ -103,6 +104,7 @@ public class TaildirSource extends AbstractSource implements
           .cachePatternMatching(cachePatternMatching)
           .annotateFileName(fileHeader)
           .fileNameHeader(fileHeaderKey)
+          .maxTailFileSize(maxTailFileSize)
           .build();
     } catch (IOException e) {
       throw new FlumeException("Error instantiating ReliableTaildirEventReader", e);
@@ -194,6 +196,7 @@ public class TaildirSource extends AbstractSource implements
             DEFAULT_FILE_HEADER);
     fileHeaderKey = context.getString(FILENAME_HEADER_KEY,
             DEFAULT_FILENAME_HEADER_KEY);
+    maxTailFileSize = context.getInteger(MAX_TAIL_FILE_SIZE, DEFAULT_MAX_TAIL_FILE_SIZE);
 
     if (sourceCounter == null) {
       sourceCounter = new SourceCounter(getName());
